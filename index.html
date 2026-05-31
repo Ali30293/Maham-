@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAHAM TRADES - Advanced Market AI</title>
+    <style>
+        :root {
+            --bg-dark: #06090f;
+            --card-bg: #0d1117;
+            --neon-green: #00ff88;
+            --neon-red: #ff3366;
+            --neon-blue: #00d2ff;
+            --text-gray: #8b949e;
+            --gold: #ffb700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+
+        /* Matrix/Grid Background Tech Effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border: 1px solid #21262d;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-box {
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--neon-green);
+            margin: 0 auto 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            letter-spacing: 1px;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            color: var(--neon-blue);
+            font-size: 11px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--neon-blue);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        select, textarea {
+            width: 100%;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #ffffff;
+            padding: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        select:focus, textarea:focus {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
+        }
+
+        textarea {
+            height: 110px;
+            resize: none;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+        }
+
+        /* Scanner Overlay Animation */
+        .scanner-box {
+            display: none;
+            background: #161b22;
+            border: 1px dashed var(--neon-blue);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(0, 210, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--neon-blue);
+            margin: 0 auto 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .scan-status {
+            font-size: 12px;
+            color: var(--neon-blue);
+            font-family: monospace;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+            background: var(--neon-green);
+            color: #000000;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* Advanced Output Design */
+        .output-card {
+            display: none;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .output-header {
+            text-align: center;
+            border-bottom: 1px dashed #30363d;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+
+        .output-title {
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .output-meta {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-top: 4px;
+        }
+
+        .signal-item {
+            background: var(--card-bg);
+            border: 1px solid #21262d;
+            border-left: 4px solid var(--neon-blue);
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .signal-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sig-time-asset {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .sig-meta {
+            font-size: 11px;
+            color: var(--text-gray);
+        }
+
+        .badge-direction {
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 75px;
+            text-align: center;
+        }
+
+        .badge-call {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+        }
+
+        .badge-put {
+            background: rgba(255, 51, 102, 0.1);
+            color: var(--neon-red);
+            border: 1px solid var(--neon-red);
+        }
+
+        /* Rules Container */
+        .rules-card {
+            background: rgba(255, 51, 102, 0.05);
+            border: 1px dashed rgba(255, 51, 102, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 11px;
+            color: #f0f6fc;
+        }
+
+        .rules-card h4 {
+            color: var(--neon-red);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .rules-list {
+            list-style: none;
+            padding-left: 2px;
+        }
+
+        .rules-list li {
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="logo-box">M</div>
+        <h1>Maham Trades</h1>
+        <p>Ruthless Strategy Engine v6.0</p>
+    </div>
+
+    <!-- Live Asset Input -->
+    <div class="form-group">
+        <div class="section-title">Select Target Asset</div>
+        <select id="assetSelect">
+            <option value="USD/JPY">USD/JPY (Live Market)</option>
+            <option value="USD/BRL (OTC)">USD/BRL (OTC Market)</option>
+            <option value="EUR/USD">EUR/USD (Live Market)</option>
+            <option value="XNGUSD (Natural Gas)">XNGUSD (Natural Gas)</option>
+        </select>
+    </div>
+
+    <!-- Custom Signals Input Box -->
+    <div class="form-group">
+        <div class="section-title">Paste Signals List / Input Data</div>
+        <textarea id="signalsInput" placeholder="Example:&#10;20:20 -> USDBRL | BUY&#10;20:25 -> USDBRL | PUT"></textarea>
+    </div>
+
+    <!-- Smart Scanner Status Block -->
+    <div class="scanner-box" id="scannerBox">
+        <div class="spinner"></div>
+        <div class="scan-status" id="scanStatus">Initializing AI Core...</div>
+    </div>
+
+    <button class="btn-submit" id="generateBtn" onclick="startMarketAnalysis()">Get Signals</button>
+
+    <!-- Signal Display Board -->
+    <div class="output-card" id="outputCard">
+        <div class="output-header">
+            <div class="output-title">✨ MAHAM TRADES FUTURE SIGNALS ✨</div>
+            <div class="output-meta" id="currentDateTime">Date: --/--/---- | Timezone: PKT (Pakistan)</div>
+        </div>
+        
+        <div id="signalsContainer">
+            <!-- Dynamic items will be injected here -->
+        </div>
+
+        <!-- Rules Notice Bar -->
+        <div class="rules-card">
+            <h4>⚠️ Risk Management & Rules</h4>
+            <ul class="rules-list">
+                <li>❌ Avoid entry on DOJI candles & sudden momentum gaps.</li>
+                <li>❌ Do not take B2B trades on the exact same market setup.</li>
+                <li>⚡ Martingale: Max 01 step recovery if necessary.</li>
+                <li>📊 Asset payout percentage must be above 80%.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    function startMarketAnalysis() {
+        const inputData = document.getElementById('signalsInput').value.trim();
+        if (!inputData) {
+            alert("Ali bhai, pehle signal text box mein kuch type ya paste toh karein!");
+            return;
+        }
+
+        const btn = document.getElementById('generateBtn');
+        const scannerBox = document.getElementById('scannerBox');
+        const outputCard = document.getElementById('outputCard');
+        const scanStatus = document.getElementById('scanStatus');
+
+        // Reset display
+        btn.style.display = 'none';
+        outputCard.style.display = 'none';
+        scannerBox.style.display = 'block';
+
+        // 5-Step Scan Simulation (approx 5 seconds)
+        const steps = [
+            "🔍 Connecting to Liquidity Node & Scanner...",
+            "📊 Analyzing last 50 Candlesticks patterns...",
+            "📉 Running Volatility Filtering (Doji check)...",
+            "⚡ Compiling Pakistani Standard Time (PKT)...",
+            "🎯 Signals List Rendered Successfully!"
+        ];
+
+        let currentStep = 0;
+        
+        const interval = setInterval(() => {
+            if (currentStep < steps.length) {
+                scanStatus.innerText = steps[currentStep];
+                currentStep++;
+            } else {
+                clearInterval(interval);
+                scannerBox.style.display = 'none';
+                btn.style.display = 'block';
+                processAndDisplaySignals(inputData);
+            }
+        }, 1000);
+    }
+
+    function processAndDisplaySignals(text) {
+        const container = document.getElementById('signalsContainer');
+        container.innerHTML = ''; // Clear older list
+        
+        // Setup current date and format
+        const now = new Date();
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        const pkiDate = now.toLocaleDateString('en-GB', options);
+        document.getElementById('currentDateTime').innerText = `📅 Date: ${pkiDate} | 🕒 Timezone: PKT (Pakistan)`;
+
+        const selectedAsset = document.getElementById('assetSelect').value;
+        const lines = text.split('\n');
+        let rawSignalsCount = 0;
+
+        lines.forEach(line => {
+            if (line.trim() === "") return;
+
+            // Attempt basic clean or fallback parse
+            let cleanLine = line.replace(/[•\s]/g, ''); 
+            let timePart = "00:00";
+            let type = "CALL";
+
+            // Regex parsing to capture time format (XX:XX)
+            const timeMatch = line.match(/(\d{1,2}:\d{2})/);
+            if (timeMatch) {
+                timePart = timeMatch[1];
+            } else {
+                return; // skip line if time couldn't be evaluated
+            }
+
+            // Convert raw format text safely to standard types
+            const upperLine = line.toUpperCase();
+            if (upperLine.includes("PUT") || upperLine.includes("SELL")) {
+                type = "PUT";
+            } else if (upperLine.includes("CALL") || upperLine.includes("BUY")) {
+                type = "CALL";
+            }
+
+            // Convert standard 24h string chunks into Pakistani 12h AM/PM
+            let [hours, minutes] = timePart.split(':');
+            let h = parseInt(hours);
+            let ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12;
+            h = h ? h : 12; // 0 converted to 12
+            let formattedPakTime = `${String(h).padStart(2, '0')}:${minutes} ${ampm}`;
+
+            rawSignalsCount++;
+
+            // Create Visual Component Card
+            const signalItem = document.createElement('div');
+            signalItem.className = 'signal-item';
+            
+            // Alter style based on direction context
+            if (type === 'PUT') {
+                signalItem.style.borderLeftColor = 'var(--neon-red)';
+            } else {
+                signalItem.style.borderLeftColor = 'var(--neon-green)';
+            }
+
+            signalItem.innerHTML = `
+                <div class="signal-info">
+                    <div class="sig-time-asset">⏰ ${formattedPakTime} | ${selectedAsset}</div>
+                    <div class="sig-meta">Expiry: 1-Min Fix | Strategy Engine Filtered</div>
+                </div>
+                <div class="badge-direction ${type === 'CALL' ? 'badge-call' : 'badge-put'}">
+                    ${type === 'CALL' ? '⬆ CALL' : '⬇ PUT'}
+                </div>
+            `;
+            container.appendChild(signalItem);
+        });
+
+        if (rawSignalsCount > 0) {
+            document.getElementById('outputCard').style.display = 'block';
+        } else {
+            alert("Format theek nahi mila! Line mein time (jaise 20:20) lazmi likhein.");
+        }
+    }
+</script>
+
+</body>
+</html>
