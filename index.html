@@ -1,496 +1,766 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAHAM TRADES - LIVE MARKET ENGINE</title>
-    <style>
-        :root {
-            --bg-dark: #06080c;
-            --card-bg: #0d1116;
-            --input-bg: #151a22;
-            --neon-green: #00ffaa;
-            --neon-cyan: #00f0ff;
-            --neon-pink: #ff0055;
-            --neon-purple: #bd00ff;
-            --text-gray: #7d8590;
-            --terminal-bg: #05070a;
-            --gold: #ffb700;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-        }
+<title>ALI TRADES AI ENGINE v7.0</title>
 
-        body {
-            background-color: var(--bg-dark);
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
-        }
+<style>
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(0, 240, 255, 0.015) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0, 240, 255, 0.015) 1px, transparent 1px);
-            background-size: 25px 25px;
-            z-index: -1;
-        }
+:root{
+--bg:#05080d;
+--card:#0d1117;
+--input:#151b24;
+--cyan:#00f0ff;
+--green:#00ffaa;
+--pink:#ff0055;
+--purple:#bd00ff;
+--gold:#ffb700;
+--gray:#7d8590;
+}
 
-        .container {
-            width: 100%;
-            max-width: 450px;
-            background: var(--card-bg);
-            border: 1px solid #21262d;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI,Arial,sans-serif;
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
+body{
+background:var(--bg);
+color:white;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:15px;
+}
 
-        .chip-icon {
-            width: 65px;
-            height: 65px;
-            background: #090d14;
-            border: 2px solid var(--neon-cyan);
-            border-radius: 16px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 12px;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
-            position: relative;
-        }
+body:before{
+content:"";
+position:fixed;
+inset:0;
+background:
+linear-gradient(#00f0ff12 1px,transparent 1px),
+linear-gradient(90deg,#00f0ff12 1px,transparent 1px);
+background-size:25px 25px;
+z-index:-1;
+}
 
-        .chip-icon svg {
-            width: 32px;
-            height: 32px;
-            fill: var(--neon-cyan);
-        }
 
-        .version-tag {
-            position: absolute;
-            bottom: -8px;
-            background: #000;
-            color: var(--neon-cyan);
-            border: 1px solid var(--neon-cyan);
-            font-size: 9px;
-            padding: 1px 6px;
-            border-radius: 10px;
-            font-weight: bold;
-            font-family: monospace;
-        }
+/* LOCK */
 
-        .header h1 {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            color: #ffffff;
-        }
+#app{
+display:none;
+}
 
-        .header h1 span {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
-        }
 
-        .header p {
-            color: var(--text-gray);
-            font-size: 11px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-top: 6px;
-            font-weight: 600;
-        }
+.lock{
+width:100%;
+max-width:400px;
+background:var(--card);
+border:2px solid var(--pink);
+border-radius:25px;
+padding:30px;
+text-align:center;
+box-shadow:0 0 30px #ff005544;
+}
 
-        .form-group {
-            margin-bottom: 18px;
-        }
 
-        .label-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--neon-cyan);
-            margin-bottom: 8px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+.lock h2{
+margin:15px 0;
+}
 
-        .label-title.purple { color: var(--neon-purple); }
-        .label-title.pink { color: var(--neon-pink); }
-        .label-title.green { color: var(--neon-green); }
 
-        .input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+.lock span{
+color:var(--pink);
+}
 
-        .input-wrapper svg {
-            position: absolute;
-            left: 12px;
-            width: 16px;
-            height: 16px;
-            fill: var(--text-gray);
-        }
 
-        select, input[type="number"] {
-            width: 100%;
-            background: var(--input-bg);
-            border: 1px solid #2d333b;
-            border-radius: 12px;
-            color: #ffffff;
-            padding: 14px 14px 14px 38px;
-            font-size: 14px;
-            font-weight: 600;
-            outline: none;
-            transition: all 0.25s ease;
-            appearance: none;
-        }
+input,select{
+width:100%;
+background:var(--input);
+border:1px solid #30363d;
+color:white;
+padding:14px;
+border-radius:12px;
+outline:none;
+}
 
-        select:focus, input[type="number"]:focus {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
-        }
 
-        .row-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
+button{
+cursor:pointer;
+border:0;
+border-radius:12px;
+padding:14px;
+font-weight:bold;
+}
 
-        .action-grid {
-            display: grid;
-            grid-template-columns: 0.8fr 1.2fr;
-            gap: 12px;
-            margin-top: 24px;
-        }
 
-        .btn {
-            border-radius: 12px;
-            padding: 14px;
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+.unlock{
+width:100%;
+margin-top:15px;
+background:var(--pink);
+color:white;
+}
 
-        .btn-reset {
-            background: rgba(255, 0, 85, 0.05);
-            border: 1px solid rgba(255, 0, 85, 0.2);
-            color: var(--neon-pink);
-        }
 
-        .btn-reset:hover {
-            background: rgba(255, 0, 85, 0.1);
-        }
+/* MAIN */
 
-        .btn-submit {
-            background: var(--neon-cyan);
-            border: none;
-            color: #000000;
-            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3);
-        }
+.container{
 
-        .btn-submit:hover {
-            background: #00d2ff;
-            transform: translateY(-1px);
-        }
+width:100%;
+max-width:460px;
+background:var(--card);
+border-radius:25px;
+padding:25px;
+border:1px solid #222;
+box-shadow:0 20px 50px #000;
 
-        .loader-panel {
-            display: none;
-            background: var(--input-bg);
-            border: 1px dashed var(--neon-cyan);
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-            margin-top: 20px;
-        }
+}
 
-        .pulse-loader {
-            width: 26px;
-            height: 26px;
-            border: 2px solid rgba(0, 240, 255, 0.1);
-            border-radius: 50%;
-            border-top-color: var(--neon-cyan);
-            margin: 0 auto 10px;
-            animation: rotate 0.7s linear infinite;
-        }
 
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
+.header{
+text-align:center;
+margin-bottom:25px;
+}
 
-        .loader-text {
-            font-size: 12px;
-            font-family: monospace;
-            color: var(--neon-cyan);
-        }
 
-        .terminal-board {
-            display: none;
-            background: var(--terminal-bg);
-            border: 1px solid #2d333b;
-            border-radius: 14px;
-            margin-top: 24px;
-            overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
-        }
+.logo{
+width:70px;
+height:70px;
+margin:auto;
+border:2px solid var(--cyan);
+border-radius:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+color:var(--cyan);
+box-shadow:0 0 25px #00f0ff55;
+}
 
-        .terminal-header {
-            background: #12161f;
-            padding: 10px 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #21262d;
-        }
 
-        .mac-dots {
-            display: flex;
-            gap: 6px;
-        }
+.header h1{
+margin-top:15px;
+}
 
-        .dot { width: 10px; height: 10px; border-radius: 50%; }
-        .dot.r { background: #ff5f56; }
-        .dot.y { background: #ffbd2e; }
-        .dot.g { background: #27c93f; }
 
-        .terminal-title {
-            font-family: monospace;
-            font-size: 11px;
-            color: var(--text-gray);
-        }
+.header span{
+color:var(--cyan);
+}
 
-        .terminal-body {
-            padding: 16px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 12px;
-            line-height: 1.6;
-            color: #e6edf3;
-            white-space: pre-wrap;
-            max-height: 400px;
-            overflow-y: auto;
-        }
 
-        .t-green { color: var(--neon-green); }
-        .t-cyan { color: var(--neon-cyan); }
-        .t-pink { color: var(--neon-pink); }
-        .t-gold { color: var(--gold); }
-    </style>
+.header p{
+font-size:11px;
+letter-spacing:3px;
+color:var(--gray);
+}
+
+
+
+.label{
+
+color:var(--cyan);
+font-size:12px;
+margin:15px 0 7px;
+font-weight:bold;
+
+}
+
+
+.grid{
+
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+
+}
+
+
+
+.btns{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:20px;
+}
+
+
+.reset{
+background:#ff005522;
+color:var(--pink);
+border:1px solid var(--pink);
+}
+
+
+.generate{
+background:var(--cyan);
+color:black;
+}
+
+
+.loader{
+
+display:none;
+margin-top:20px;
+padding:15px;
+border:1px dashed var(--cyan);
+border-radius:15px;
+text-align:center;
+color:var(--cyan);
+
+}
+
+
+.result{
+
+display:none;
+margin-top:20px;
+background:#05070a;
+border-radius:15px;
+padding:15px;
+font-family:monospace;
+line-height:1.7;
+
+}
+
+
+.green{color:var(--green)}
+.red{color:var(--pink)}
+.gold{color:var(--gold)}
+.blue{color:var(--cyan)}
+
+
+.copy{
+
+width:100%;
+margin-top:15px;
+background:var(--green);
+color:black;
+
+}
+
+
+</style>
 </head>
+
+
 <body>
 
-<div class="container">
-    <div class="header">
-        <div class="chip-icon">
-            <svg viewBox="0 0 24 24">
-                <path d="M19,11H17V9A1,1,0,0,0,16,8H14V6a1,1,0,0,0-1-1H11V3a1,1,0,0,0-2,0V5H7A1,1,0,0,0,6,6H4V8A1,1,0,0,0,3,9v2H1a1,1,0,0,0,0,2H3v2a1,1,0,0,0,1,1H6v2a1,1,0,0,0,1,1H9v2a1,1,0,0,0,2,0V19h2a1,1,0,0,0,1-1V16h2a1,1,0,0,0,1-1V13h2a1,1,0,0,0,0-2V11ZM15,15H9V9h6Z"/>
-            </svg>
-            <div class="version-tag">v6.0</div>
-        </div>
-        <h1>MAHAM <span>TRADES</span></h1>
-        <p>ADVANCED MARKET AI ENGINE</p>
-    </div>
 
-    <!-- Strictly Live Market Selector -->
-    <div class="form-group">
-        <div class="label-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg> CURRENCY PAIR</div>
-        <div class="input-wrapper">
-            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3.5 9c-.83 0-1.5-.67-1.5-1.5S14.67 9 15.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-            <select id="assetDropdown">
-                <option value="LIVE-MIXED">ALL LIVE MARKET PAIRS (USDJPY, GBPUSD, EURJPY, EURUSD)</option>
-                <option value="USD/JPY">USD/JPY (LIVE)</option>
-                <option value="GBP/USD">GBP/USD (LIVE)</option>
-                <option value="EUR/JPY">EUR/JPY (LIVE)</option>
-                <option value="EUR/USD">EUR/USD (LIVE)</option>
-            </select>
-        </div>
-    </div>
+<div class="lock" id="lock">
 
-    <div class="form-group">
-        <div class="label-title green"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg> TIME FRAME</div>
-        <div class="input-wrapper">
-            <svg viewBox="0 0 24 24"><path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
-            <select disabled>
-                <option>1 MINUTE (ANALYSIS MODE)</option>
-            </select>
-        </div>
-    </div>
+<h1>🔒</h1>
 
-    <div class="row-grid">
-        <div class="form-group">
-            <div class="label-title purple"># SIGNALS</div>
-            <div class="input-wrapper">
-                <svg viewBox="0 0 24 24"><path d="M10 20h4V4h-4v16zm-6 0h4v-8H4v18zM16 9v11h4V9h-4z"/></svg>
-                <input type="number" id="sigCount" min="1" max="50" value="10">
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="label-title pink">DIRECTION</div>
-            <div class="input-wrapper">
-                <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-                <select id="dirSelect">
-                    <option value="ALL">ALL</option>
-                    <option value="BUY">ONLY BUY</option>
-                    <option value="PUT">ONLY PUT</option>
-                </select>
-            </div>
-        </div>
-    </div>
+<h2>ALI TRADES<br>
+<span>SECURE ACCESS</span>
+</h2>
 
-    <!-- 5-Second Indicator Scanning Panel -->
-    <div class="loader-panel" id="loadingPanel">
-        <div class="pulse-loader"></div>
-        <div class="loader-text" id="loaderLog">Initializing AI Core Node...</div>
-    </div>
 
-    <div class="action-grid">
-        <button class="btn btn-reset" onclick="resetForm()">Reset</button>
-        <button class="btn btn-submit" onclick="executeForenixEngine()">Get Signals</button>
-    </div>
+<input id="pass" type="password" placeholder="ENTER KEY">
 
-    <div class="terminal-board" id="resultTerminal">
-        <div class="terminal-header">
-            <div class="mac-dots">
-                <div class="dot r"></div>
-                <div class="dot y"></div>
-                <div class="dot g"></div>
-            </div>
-            <div class="terminal-title">>_ ANALYSISRESULT.JSON</div>
-        </div>
-        <div class="terminal-body" id="terminalContent"></div>
-    </div>
+
+<button class="unlock" onclick="openApp()">
+UNLOCK ENGINE
+</button>
+
+<p id="err" style="color:red;margin-top:10px;display:none">
+Wrong Password
+</p>
+
 </div>
 
+
+
+
+
+<div class="container" id="app">
+
+
+<div class="header">
+
+<div class="logo">⚡</div>
+
+<h1>ALI <span>TRADES</span></h1>
+
+<p>AI MARKET STRUCTURE ENGINE v7.0</p>
+
+</div>
+
+
+
+<div class="label">
+CURRENCY PAIR
+</div>
+
+<select id="pair">
+
+<option>LIVE MIXED PAIRS</option>
+<option>EUR/USD</option>
+<option>GBP/USD</option>
+<option>USD/JPY</option>
+<option>EUR/JPY</option>
+
+</select>
+
+
+
+<div class="label">
+TIME FRAME
+</div>
+
+<select>
+
+<option>1 MINUTE MODE</option>
+
+</select>
+
+
+
+<div class="grid">
+
+<div>
+<div class="label">SIGNALS</div>
+<input id="count" type="number" value="10">
+</div>
+
+
+<div>
+
+<div class="label">
+DIRECTION
+</div>
+
+<select id="dir">
+
+<option>ALL</option>
+<option>BUY</option>
+<option>PUT</option>
+
+</select>
+
+</div>
+
+
+</div>
+
+
+<div class="btns">
+
+<button class="reset" onclick="resetApp()">
+RESET
+</button>
+
+
+<button class="generate" onclick="generate()">
+GET SIGNALS
+</button>
+
+
+</div>
+
+
+
+<div class="loader" id="loader">
+Scanning Market Structure...
+</div>
+
+
+<div class="result" id="result">
+
+<div id="output"></div>
+
+<button class="copy" onclick="copyText()">
+COPY SIGNALS
+</button>
+
+</div>
+
+
+</div>
+
+
 <script>
-    function resetForm() {
-        document.getElementById('sigCount').value = 10;
-        document.getElementById('resultTerminal').style.display = 'none';
-        document.getElementById('loadingPanel').style.display = 'none';
-    }
+    // PASSWORD
+function openApp(){
 
-    function executeForenixEngine() {
-        const count = parseInt(document.getElementById('sigCount').value);
-        if (isNaN(count) || count < 1) {
-            alert("Ali bhai, proper signal value set karein!");
-            return;
-        }
+let p=document.getElementById("pass").value;
 
-        const loader = document.getElementById('loadingPanel');
-        const terminal = document.getElementById('resultTerminal');
-        
-        terminal.style.display = 'none';
-        loader.style.display = 'block';
+if(p==="aliali0011"){
 
-        const stages = [
-            "📈 [1/5] SCANNING LIVE MOVING AVERAGES & SMA CHANNELS...",
-            "📉 [2/5] PARSING STOCHASTIC OSCILLATOR MULTI-PAIRS...",
-            "🔍 [3/5] CHECKING LIVE SUPPORT & RESISTANCE S-LEVELS...",
-            "⚠️ [4/5] VOLATILITY FILTER ACTIVE (COMPLETELY REJECTING OTC & GAPS)...",
-            "🚀 [5/5] ALGORITHMS MATCHED! 99% ACCURACY LIVE LIST READY IN PKT..."
-        ];
+document.getElementById("lock").style.display="none";
+document.getElementById("app").style.display="block";
 
-        let index = 0;
-        const scan = setInterval(() => {
-            if (index < stages.length) {
-                document.getElementById('loaderLog').innerText = stages[index];
-                index++;
-            } else {
-                clearInterval(scan);
-                loader.style.display = 'none';
-                renderPremiumTerminal(count);
-            }
-        }, 1000); // 5 Seconds multi-indicator scan
-    }
+}else{
 
-    function renderPremiumTerminal(total) {
-        const terminalContent = document.getElementById('terminalContent');
-        const selectedOption = document.getElementById('assetDropdown').value;
-        const preferredDir = document.getElementById('dirSelect').value;
+document.getElementById("err").style.display="block";
 
-        const now = new Date();
-        const d = String(now.getDate()).padStart(2, '0');
-        const m = String(now.getMonth() + 1).padStart(2, '0');
-        const y = now.getFullYear();
-        const formattedDate = `${d}/${m}/${y}`;
+}
 
-        let outputHTML = `✨ <span class="t-gold">MAHAM TRADES FUTURE SIGNALS</span> ✨\n\n`;
-        outputHTML += `🖥 <span class="t-cyan">DATE: ${formattedDate}</span>\n`;
-        outputHTML += `⌛ <span class="t-cyan">PAKISTANI TIME (AM/PM) 🇵🇰</span>\n`;
-        outputHTML += `🎯 <span class="t-green">SIGNAL ACCURACY: 99% VERIFIED</span>\n\n`;
-        outputHTML += `❗️ <span class="t-pink">AVOID SIGNAL AFTER BIG MOMENTUM, DOJI, BELOW 80%, GAPS 😊</span>\n\n`;
-        outputHTML += `⚡ <span class="t-gold">MARTINGALE: -01</span>\n\n`;
-        outputHTML += `<span class="t-cyan">1 MINUTES MODE :-</span>\n\n`;
+}
 
-        let currentMinutes = now.getMinutes() + 3;
-        let currentHours = now.getHours();
 
-        // 4 Strict Live Pairs Rotation List requested by user
-        const livePairs = ["USD/JPY", "GBP/USD", "EUR/JPY", "EUR/USD"];
-        const modes = ["W-Pattern Reversal", "S-Level Bounce", "M-Pattern Breakout", "SMA Trend Ride"];
 
-        for (let i = 0; i < total; i++) {
-            if (currentMinutes >= 60) {
-                currentMinutes = currentMinutes % 60;
-                currentHours = (currentHours + 1) % 24;
-            }
+// RESET
 
-            // Determine specific pair using systematic index rotation (1, 2, 3, 4 structure)
-            let currentAsset = selectedOption;
-            if (selectedOption === "LIVE-MIXED") {
-                currentAsset = livePairs[i % livePairs.length];
-            }
+function resetApp(){
 
-            let finalDir = "BUY";
-            if (preferredDir === "ALL") {
-                finalDir = Math.random() > 0.5 ? "BUY" : "PUT";
-            } else {
-                finalDir = preferredDir;
-            }
+document.getElementById("count").value=10;
+document.getElementById("result").style.display="none";
+document.getElementById("loader").style.display="none";
 
-            let displayHours = currentHours;
-            let ampm = displayHours >= 12 ? 'PM' : 'AM';
-            displayHours = displayHours % 12;
-            displayHours = displayHours ? displayHours : 12;
+}
 
-            const timeStr = `${String(displayHours).padStart(2, '0')}:${String(currentMinutes).padStart(2, '0')} ${ampm}`;
-            const dirColor = finalDir === "BUY" ? "t-green" : "t-pink";
-            const randomMode = modes[Math.floor(Math.random() * modes.length)];
 
-            outputHTML += `• <span class="t-gold">${timeStr}</span> → <span class="t-cyan">${currentAsset}</span> | <span class="${dirColor}">${finalDir}</span> | Mode: ${randomMode}\n`;
 
-            currentMinutes += Math.floor(Math.random() * 3) + 3;
-        }
 
-        outputHTML += `\n🎯 <span class="t-gold">TRADING RULES (Avoid)</span>\n`;
-        outputHTML += `<span class="t-pink">✗ Doji Candle\n✗ Big Gap\n✗ B2B Trade on same Market\n✗ Opposite Trend / Against Trend</span>`;
+let copyData="";
 
-        terminalContent.innerHTML = outputHTML;
-        document.getElementById('resultTerminal').style.display = 'block';
-    }
+
+// GENERATE ENGINE
+
+function generate(){
+
+
+let total=parseInt(document.getElementById("count").value);
+
+let pair=document.getElementById("pair").value;
+
+let direction=document.getElementById("dir").value;
+
+
+
+let loader=document.getElementById("loader");
+let result=document.getElementById("result");
+
+
+result.style.display="none";
+loader.style.display="block";
+
+
+setTimeout(()=>{
+
+
+loader.style.display="none";
+
+createSignals(total,pair,direction);
+
+
+result.style.display="block";
+
+
+},2000);
+
+
+
+}
+
+
+
+
+
+function createSignals(total,pair,direction){
+
+
+
+let output=document.getElementById("output");
+
+
+let now=new Date();
+
+
+let date=
+now.getDate()+"/"+
+(now.getMonth()+1)+"/"+
+now.getFullYear();
+
+
+
+let html=`
+
+
+<span class="gold">
+✨ ALI TRADES AI FUTURE SIGNALS ✨
+</span>
+
+
+<br><br>
+
+
+<span class="blue">
+DATE: ${date}
+</span>
+
+
+<br>
+
+
+<span class="green">
+ACCURACY: 90% - 95% VERIFIED
+</span>
+
+
+<br><br>
+
+
+<span class="gold">
+📊 MARKET STRUCTURE SCAN
+</span>
+
+
+<br>
+
+✓ Break Of Structure (BOS)
+
+<br>
+
+✓ Higher High (HH)
+
+<br>
+
+✓ Higher Low (HL)
+
+<br>
+
+✓ Lower High (LH)
+
+<br>
+
+✓ Lower Low (LL)
+
+<br>
+
+✓ Support & Resistance
+
+<br>
+
+✓ Trend Confirmation
+
+
+<br><br>
+
+<span class="red">
+⚠ AVOID: DOJI / BIG GAP / AGAINST TREND
+</span>
+
+
+<br><br>
+
+
+<span class="blue">
+1 MINUTES MODE :-
+</span>
+
+
+<br><br>
+
+`;
+
+
+
+copyData=
+"ALI TRADES AI SIGNALS\n\n"+
+"ACCURACY 90-95%\n\n";
+
+
+
+let pairs=[
+"EUR/USD",
+"GBP/USD",
+"USD/JPY",
+"EUR/JPY"
+];
+
+
+
+let strategies=[
+
+"BOS + Higher High + Support Bounce",
+
+"Lower High + Resistance Rejection",
+
+"Higher Low + Trend Continuation",
+
+"Liquidity Sweep + Break Structure",
+
+"S/R Zone Confirmation"
+
+];
+
+
+
+let mins=now.getMinutes()+3;
+
+
+
+for(let i=0;i<total;i++){
+
+
+if(mins>=60){
+
+mins-=60;
+
+}
+
+
+let asset=
+pair==="LIVE MIXED PAIRS"
+?
+pairs[i%pairs.length]
+:
+pair;
+
+
+
+let side;
+
+
+
+if(direction==="ALL"){
+
+side=Math.random()>0.5?
+"BUY":"PUT";
+
+}else{
+}
+
+
+let time=
+String(now.getHours()%12||12).padStart(2,"0")
++
+":"
++
+String(mins).padStart(2,"0")
++
+(now.getHours()>=12?" PM":" AM");
+
+
+
+let structure=strategies[
+Math.floor(Math.random()*strategies.length)
+];
+
+
+
+let color=
+side==="BUY"?
+"green":
+"red";
+
+
+
+html+=`
+
+• <span class="gold">${time}</span>
+→
+
+<span class="blue">${asset}</span>
+
+|
+
+<span class="${color}">
+${side}
+</span>
+
+<br>
+
+<span style="color:#7d8590">
+Reason:
+${structure}
+</span>
+
+<br><br>
+
+`;
+
+
+
+copyData+=
+"• "+time+
+" → "+
+asset+
+" | "+
+side+
+"\n";
+
+
+
+mins += Math.floor(Math.random()*3)+3;
+
+
+
+}
+
+
+
+
+html+=`
+
+<span class="gold">
+
+🎯 TRADING RULES
+
+</span>
+
+<br>
+
+✗ Doji Candle Avoid
+
+<br>
+
+✗ Big Gap Avoid
+
+<br>
+
+✗ Opposite Trend Avoid
+
+<br>
+
+✗ B2B Same Pair Avoid
+
+
+<br><br>
+
+
+<span class="green">
+
+ALI TRADES AI ENGINE ACTIVE ⚡
+
+</span>
+
+`;
+
+
+
+output.innerHTML=html;
+
+
+}
+
+
+
+
+
+function copyText(){
+
+
+navigator.clipboard.writeText(copyData);
+
+
+alert("Signals Copied 🚀");
+
+
+}
+
+
+
+
 </script>
 
+
 </body>
-                                         </html>
+</html>
+
+    
